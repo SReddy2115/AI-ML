@@ -1,0 +1,60 @@
+import copy
+size = int(input('Size of Board= '))
+def boardsize(size):
+    board = [0]*size
+    for ix in range(size):
+        board[ix] = [0]*size
+    return board
+            
+def place(board, row, col, size):
+
+    for iy in range(col):
+        if board[row][iy] == 1:
+            return False
+    
+    ix, iy = row, col
+    while ix >= 0 and iy >= 0:
+        if board[ix][iy] == 1:
+            return False
+        ix-=1
+        iy-=1
+    
+    jx, jy = row,col
+    while jx < size and jy >= 0:
+        if board[jx][jy] == 1:
+            return False
+        jx+=1
+        jy-=1
+    
+    return True
+
+def replaceval(board):
+    global solutions
+    saved_board = copy.deepcopy(board)
+    solutions.append(saved_board)
+
+def backtracking(board, col, size):
+    if col >= size:
+        return
+    
+    for i in range(size):
+        if place(board, i, col, size):
+            board[i][col] = 1
+            if col == size-1:
+                replaceval(board)
+                board[i][col] = 0
+                return
+            backtracking(board, col+1, size)
+            board[i][col] = 0
+            print(i,col)
+  
+def possiblesolutions(solutions, size):
+    for sol in solutions:
+        for row in sol:
+            print(row)
+        print()
+
+board = boardsize(size)
+solutions = []
+backtracking(board, 0, size)
+possiblesolutions(solutions, size)
