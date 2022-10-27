@@ -1,1 +1,134 @@
+#A) number of rows in training and test sets
 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+file1 = open("test.csv")
+file2= open("train.csv")
+file3=open("gender_submission.csv")
+numline1 = len(file1.readlines())
+numline2 = len(file2.readlines())
+print ("number of rows in test.csv =",numline1)
+print ("number of rows in train.csv =",numline2)
+
+#B) display the structure of the dataset along with the datatypes of the fields
+import pandas as pd
+df = pd.read_csv('test.csv')
+df1 = pd.read_csv('train.csv')
+df2 = pd.read_csv('gender_submission.csv')
+print("Data set and Data Type of test.csv")
+print("  ")
+print(df.dtypes)
+print("----------------------------------")
+print("Data set and Data Type of train.csv")
+print("  ")
+print(df1.dtypes)
+print("----------------------------------")
+print("Data set and Data Type of gender_submission.csv")
+print("  ")
+print(df2.dtypes)
+
+#1. Analyse the data and identify which columns are not relevant for survivor prediction task. Drop those 
+#columns from the dataframes. 
+
+file2 = pd.read_csv('train.csv')
+print("Original 'train.csv' CSV Data: \n")
+file2.drop(['Name','Ticket','Survived',],inplace=True, axis=1)
+
+print("\nCSV Data after deleting the columns:\n")
+print(file2)
+
+#2. Check how many columns have missing values in them (NA) and how many have NaN values. Logically 
+#impute the dataset.
+
+print(df.isnull().sum())
+print("--------------------------------")
+print(df1.isnull().sum())
+print("--------------------------------")
+print(df2.isnull().sum())
+
+
+#3. Identify any categorical valued columns (non-numeric) and convert them to numeric.
+numeric= {"Sex": {"female": 1, "male": 2}}
+df1.replace(numeric).dtypes
+
+
+#1. Show how many passengers were male and female and plot using matplotlib. On the same plot depict 
+#the people who survived and who died. Make accurate axis and legend. Save the plot in a png file.
+count=df1['Sex'].value_counts()[0]
+count1=df1[['Sex','Survived']].value_counts()
+count1.plot(kind='bar',color=['yellow','blue'])
+plt.title("plot of male and female passenger and survived passenger")
+plt.xlabel(['Survived','Sex'])
+plt.ylabel('Count')
+plt.savefig('graph1 plot of male and female passenger and survived passenger.png')
+plt.show()
+
+
+
+"""" #2. Show the histogram of the count of passengers who died (according to their age). Age ranges should 
+#be <10, 10 to <20, 20 to <30 and so on. 
+#How many minor children died and how many of them survived (<16 years). Create a separate plot for 
+the passengers who survived."""
+
+df1.query('Survived ==0 and Age<=16').count()
+survived=df1.query('Survived==0')
+age=survived['Age']
+plt.hist(age,bins=[10,20,30,40,50,60,70,80,90])
+plt.title("How many of them survived")
+plt.xlabel('Age')
+plt.ylabel('Count')
+plt.show()
+
+#.3Show the distribution on the count of passengers who died (according to the fare they paid). Choose 
+#fare ranges such that the mean lies in the middle range. 
+#Give the percentage of passengers who survived as had paid more than $100. Justify if there was any 
+#bias in the rescue operation towards the rich (Yes/No/not enough evidence). 
+paid=df1.query('Survived!=1')
+paid
+plt.hist(paid['Fare'],bins=[5,10,50,100,150,200,250,300],color='orange')
+plt.title("the distribution on the count of passengers who died")
+plt.xlabel('Fare')
+plt.ylabel('Fare')
+plt.show()
+
+
+
+
+paid=df1.query('Survived==1 and Fare>=100')
+df1
+plt.hist(paid['Fare'],bins=[5,10,50,100,150,200,250,300],color='#C02323')
+plt.title("Rescue operation towards the rich (Yes/No/not enough evidence).")
+plt.xlabel('Fare')
+plt.ylabel('bins')
+plt.show()
+
+F100=df1.query('Fare>=100')
+PID=F100['PassengerId'].count()
+PS=paid['PassengerId'].count()
+percentage=(PS/PID)*100
+print("Number of Passenger who survived and have fare>=100 = ", PS)
+print(" Number of Passenger Id who have paid fare>=100 = ",PID)
+print("Percentage of passenger survived = ",percentage,"%")
+
+
+
+
+#4. Plot graphs showing correlation between different pairs of attributes. Infer if there is any significant 
+#correlation between survivors and any specific feature
+
+correlation=df1.corr()
+print(correlation)
+sns.heatmap(correlation,linewidth = 1 , cmap = 'Reds')
+plt.show()
+
+
+
+#Find number of Passengers who are Married.
+count=df1['Name'].tolist()
+l=0
+for i in range(len(count)):
+    for j in range(i,len(count[i])):
+        if('Mrs.','Mr' in count[j] ):
+            l=l+1
+print(c)
