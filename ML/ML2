@@ -1,0 +1,12 @@
+class Solution:
+    def getOrder(self, tasks: List[List[int]]) -> List[int]:
+        tasks = [(task[0], i, task[1]) for i, task in enumerate(tasks)]
+        tasks.sort()
+        backlog = []
+        time = 0
+        ans = []
+   
+            d, j = heapq.heappop(backlog)
+            time += d
+            ans.append(j)
+        return ans
